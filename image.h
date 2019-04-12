@@ -26,7 +26,7 @@ class ImageTemplate
 {
 public:
 // Constructors & destructors.  The default constructor creates a 0*0 image.
-	ImageTemplate ();  
+	ImageTemplate ();
 	~ImageTemplate ();
 	ImageTemplate (const ImageTemplate&);
 	const ImageTemplate& operator= (const ImageTemplate&);
@@ -41,7 +41,7 @@ public:
 	//     On failure of loading functions, the image will be resized to 0*0.
 	//     The PNG functions are for use in the labs.  RAW and PGM functions are for
 	//     compatibility.
-	//     [ The saving functions require the existence of a function 
+	//     [ The saving functions require the existence of a function
 	//     char GreyValue (PixelType) in order to link ]
 	bool LoadPng (std::string fileName);
 	bool SavePng (std::string fileName) const;
@@ -63,7 +63,7 @@ protected:
 	int CoordinateIndex (int x, int y) const;
 
 	// The data of the image.  It is stored in a one-dimensional array so that the FFT function
-	//    is faster in ComplexFFTImage.  This is not allocated and set to NULL if _width or _height 
+	//    is faster in ComplexFFTImage.  This is not allocated and set to NULL if _width or _height
 	//    is zero.
 	PixelType* _data;
 
@@ -101,7 +101,7 @@ _data (NULL)
 
 // Destructinator
 template<typename PixelType>
-ImageTemplate<PixelType>::~ImageTemplate () 
+ImageTemplate<PixelType>::~ImageTemplate ()
 {
   Resize (0, 0); // this will delete m_data and set it to NULL (not re-allocate it)
 }
@@ -148,25 +148,25 @@ const PixelType& ImageTemplate<PixelType>::Pixel (int x, int y) const
 // The I/O code in this file was originally based on the example.c skeleton code
 // distributed with the PNG library, and modified by Michael Garland in libgfx.
 template<typename PixelType>
-bool ImageTemplate<PixelType>::LoadPng (std::string filename) 
+bool ImageTemplate<PixelType>::LoadPng (std::string filename)
 {
 	FILE *fp = fopen (filename.c_str (), "rb");
-	if (!fp) 
+	if (!fp)
 	{
 		return false;
 	}
 
 	// The last three arguments can be used to set up error handling callbacks.
 	png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-	if (!png_ptr) 
-	{ 
-		fclose (fp); 
-		return false; 
+	if (!png_ptr)
+	{
+		fclose (fp);
+		return false;
 	}
 
 	// Allocate required structure to hold memory information.
 	png_infop info_ptr = png_create_info_struct (png_ptr);
-	if (!info_ptr) 
+	if (!info_ptr)
 	{
 		fclose(fp);
 		png_destroy_read_struct(&png_ptr, NULL, NULL);
@@ -194,26 +194,26 @@ bool ImageTemplate<PixelType>::LoadPng (std::string filename)
 	png_get_IHDR (png_ptr, info_ptr, &width, &height, &bit_depth, &color_type, &interlace_type, NULL, NULL);
 
 	// truncate 16 bits/pixel to 8 bits/pixel
-	if (bit_depth == 16) 
+	if (bit_depth == 16)
 	{
 		png_set_strip_16 (png_ptr);
 	}
 
 	// expand paletted colors into RGB color values
-	if (color_type == PNG_COLOR_TYPE_PALETTE) 
+	if (color_type == PNG_COLOR_TYPE_PALETTE)
 	{
 		png_set_expand (png_ptr);
 	}
-	
+
 	// expand grayscale images to full 8 bits/pixel
-	else if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8) 
+	else if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8)
 	{
 		png_set_expand (png_ptr);
 	}
 
 	// Expand paletted or RGB images with transparency to full alpha
 	// channels so the data will be available as RGBA quartets.
-	if (png_get_valid (png_ptr, info_ptr, PNG_INFO_tRNS)) 
+	if (png_get_valid (png_ptr, info_ptr, PNG_INFO_tRNS))
 	{
 		png_set_expand (png_ptr);
 	}
@@ -225,7 +225,7 @@ bool ImageTemplate<PixelType>::LoadPng (std::string filename)
 	std::vector<png_bytep> row_pointers (height);
 	int nchan = png_get_channels (png_ptr, info_ptr);
 	int nbytes = png_get_rowbytes (png_ptr, info_ptr);
-	for (int row = 0; row < height; row++) 
+	for (int row = 0; row < height; row++)
 	{
 		row_pointers[row] = (png_bytep)malloc(nbytes);
 	}
@@ -233,16 +233,16 @@ bool ImageTemplate<PixelType>::LoadPng (std::string filename)
 	png_read_end (png_ptr, info_ptr);
 
 	// warn if the image has more channels than we can handle
-	if (nchan != 1) 
+	if (nchan != 1)
 	{
 		std::cout << "Warning: " << filename << " has more than one channel (only reading the first)." << std::endl;
 	}
 
 	// read the data and convert its pixel type
 	Resize (width, height);
-	for (int row = 0; row < _height; row++) 
+	for (int row = 0; row < _height; row++)
 	{
-		for (int column = 0; column < _width; column++) 
+		for (int column = 0; column < _width; column++)
 		{
 			Pixel (column, row) = PixelType ( row_pointers[row][column*nchan] );
 		}
@@ -261,23 +261,23 @@ bool ImageTemplate<PixelType>::LoadPng (std::string filename)
 // SavePng
 // See comments from LoadPng
 template<typename PixelType>
-bool ImageTemplate<PixelType>::SavePng (std::string filename) const 
+bool ImageTemplate<PixelType>::SavePng (std::string filename) const
 {
 	FILE *fp = fopen (filename.c_str (), "wb");
-	if (!fp) 
+	if (!fp)
 	{
 		return false;
 	}
 
 	png_structp png_ptr = png_create_write_struct (PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-	if (!png_ptr) 
-	{ 
+	if (!png_ptr)
+	{
 		fclose(fp);
 		return false;
 	}
 
 	png_infop info_ptr = png_create_info_struct (png_ptr);
-	if (!info_ptr) 
+	if (!info_ptr)
 	{
 		fclose(fp);
 		png_destroy_write_struct (&png_ptr, (png_infopp)NULL);
@@ -305,13 +305,13 @@ bool ImageTemplate<PixelType>::SavePng (std::string filename) const
 
 	// convert the data to bytes so that we can pass it to the png writer
 	unsigned char* bytePixelData = new unsigned char[_width*_height];
-	for (int i = 0; i < _width*_height; i++) 
+	for (int i = 0; i < _width*_height; i++)
 	{
 		bytePixelData[i] = GreyValue (_data[i]);
 	}
 
 	std::vector<png_bytep> row_pointers (_height);
-	for(int k = 0; k < _height; k++) 
+	for(int k = 0; k < _height; k++)
 	{
 		row_pointers[k] = (png_bytep) &bytePixelData[k * _width];
 	}
@@ -336,7 +336,7 @@ bool ImageTemplate<PixelType>::SavePgm (std::string fileName) const
 		std::cerr << "Failed to open " << fileName << " for writing." << std::endl;
 		return false;
 	}
-	
+
 	out << "P5" << std::endl << _width << " " << _height << std::endl << 255 << std::endl;
 	for (int i = 0; i < _width*_height; i++)
 	{
@@ -344,7 +344,7 @@ bool ImageTemplate<PixelType>::SavePgm (std::string fileName) const
 		out.write ((char*)&byte, 1);
 	}
 	out.close ();
-	return true;	
+	return true;
 }
 
 // LoadRaw
@@ -352,8 +352,8 @@ template<typename PixelType>
 bool ImageTemplate<PixelType>::LoadRaw (std::string fileName, int width, int height)
 {
 	Resize (width, height);
-	
-	std::ifstream in;	
+
+	std::ifstream in;
 	in.open (fileName.c_str (), std::ios::binary );
 	if (in.fail () )
 	{
@@ -382,7 +382,7 @@ bool ImageTemplate<PixelType>::SaveRaw (std::string fileName) const
 		std::cerr << "Failed to open " << fileName << " for writing." << std::endl;
 		return false;
 	}
-	
+
 	for (int i = 0; i < _width*_height; i++)
 	{
 		char byte = GreyValue (_data[i]);
@@ -412,7 +412,7 @@ void ImageTemplate<PixelType>::Resize (int width, int height)
 	_width = _height = 0;
 	delete[] _data; // calling delete on NULL is kosher (see Soustroup)
 	_data = NULL;
-	
+
 	if (width < 0 || height < 0)
 	{
 		std::cerr << "Image dimensions (" << width << "," << height << ") are invalid." << std::endl;
@@ -420,10 +420,10 @@ void ImageTemplate<PixelType>::Resize (int width, int height)
 	}
 	_width = width;
 	_height = height;
-	
+
 	int numberOfPixels = _width*_height;
 	_data = new PixelType[numberOfPixels]; // if numberOfPixels == 0, this will return NULL (again, see Soustroup)
-	
+
 	if (numberOfPixels != 0 && _data == NULL)
 	{
 		std::cerr << "Could not allocate memory for image" << std::endl;
@@ -447,7 +447,7 @@ int ImageTemplate<PixelType>::CoordinateIndex (int x, int y) const
 	{
 		std::cerr << "Warning: The pixel coordinate (" << x << "," << y << ") is invalid, clamping coordinates to the image's dimensions" << std::endl;
 	}
-	
+
 	x = std::min (x, _width - 1);
 	y = std::min (y, _height - 1);
 	x = std::max (x, 0);

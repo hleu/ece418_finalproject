@@ -15,19 +15,20 @@ int main (int argc, char* argv[])
 	// check parameters' correctness
 	if (argc != 5)
 	{
-		cerr << "Usage: lab1 in.png logo.png out.png alpha" << endl;
+		cerr << "Usage: ./final-part1 in.png logo.png out.png alpha" << endl;
 		return 1;
 	}
-	cout << "Try: ./lab1 images/lena.png images/logo.png out.png 50 \n";
 
-	// load the imagez
+	// load the images
 	Image image;
 	image.LoadPng (argv[1]);
 	Image logo;
 	logo.LoadPng (argv[2]);
 
+	// get the alpha value
 	int alpha = atoi(argv[4]);
-
+	
+	// loop through image to add logo to the input images
 	for (int i = 0; i < image.Width(); i++){
 		for (int j = 0; j < image.Height(); j++){
 			if (logo.Pixel(i,j) < 128){
