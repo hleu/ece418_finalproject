@@ -58,9 +58,9 @@ And we will have the output image with logo on top in image/out.png
 ## Authors
 
 * [Dustin Mayfield-Jones](https://github.com/dmayfieldjones)
+* [Anh Leu](https://github.com/hleu)
 
 ## Acknowledgments
 
 * [ECE 418 labs](https://courses.engr.illinois.edu/ece418/sp2019/labs.html)
 
-* [Anh Leu](https://github.com/hleu)
