@@ -26,10 +26,14 @@ Make the files
 
 ```
 gmake final-part1
+gmake final-part2
+gmake final-part3
 ```
 or
 ```
 make final-part1
+make final-part2
+make final-part3
 ```
 
 ## Running the code
@@ -48,6 +52,28 @@ For example,
 
 And we will have the output image with logo on top in image/out.png
 
+### Part 2
+This part created a hidden message using run length of the logo image (tested up to 128x128 size, not recommended much more than that). Then it hides the message into the fft of the input image. This results in an image that is almost the same as the input image. However, it actually includes the hidden message. The current code is not perfect since the image we save is in uint8 for normal grayscale image. The pixel value, therefore, is grounded. Because of that, we also need to keep track of the difference between the output image and the float value to be able to recover the hidden message. Then we can use that message to recreate the logo image.
+
+We first need to get the hidden message to a .txt file. For example,
+```
+./final-part2 image/smaller_logo.png output/logo.txt
+```
+
+Then we can use the final.m file to get the output image with hidden message as well as the difference matrix. We need to change the input to the appropriate location. For example,
+```
+Message = fileread('output/logo.txt');
+output_img_file = 'output/output.png';
+org_message = 'output/msg.txt';
+```
+
+This will create the output image with hidden message at "output/output.png" and recover the hidden message to "msg.txt". Finally, we need to use this hidden message to recover the original logo input. For example,
+```
+./final-part3 output/msg.txt output/output_logo.png
+```
+
+This logo image is the original logo with each pixel threshold to 0 or 255 only.
+ 
 ## Expected rough timeline
 * 04/15/2019: Finish figuring out how to implement basic watermark on image
 * 04/22/2019: Work on more optimal watermark on image
@@ -63,4 +89,3 @@ And we will have the output image with logo on top in image/out.png
 ## Acknowledgments
 
 * [ECE 418 labs](https://courses.engr.illinois.edu/ece418/sp2019/labs.html)
-
