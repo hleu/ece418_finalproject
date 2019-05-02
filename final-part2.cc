@@ -1,147 +1,163 @@
 /*===
-lab10-part2-solution.cc
+lab3-skeleton.cc
 
-Abstract: Skeleton for part two of lab ten (run length coding)
+Abstract: Skeleton for Lab 3 parts (a), (b), and (c)
 ===*/
 
 #include <stdlib.h>
 #include <iostream>
-#include <fstream>
 #include <vector>
-#include "image.h"
-
-#include <string>
+#include "imagefft.h"
 using namespace std;
-
-// calculate the log base 2 of a number
-double log2 (double x);
-
-// snake raster scan function -- updates x and y for a raster-snake scan
-// of image, returning false only when the whole image has been traversed
-bool SnakePixel (const Image& image, int& x, int& y);
-
-string num2str (int Number);
 
 int main (int argc, char* argv[])
 {
-	// verify arguments' correctness
-	if (argc != 3)
+	// check parameters' correctness [for parts (a) and (b) -- this needs to be changed for (c)]
+	if (argc < 6)
 	{
-		cerr << "Useage: " << argv[0]
-		     << " input.png histogram.txt" << endl;
+		cerr << "Usage: " << argv[0] << " input.png output.png filter_flag decimation_flag decimation/interpolation_factor" << endl;
 		return 1;
 	}
 
+	// read the filter flag and dicimation factor
+	int filter_flag = atoi(argv[3]);
+	double M = atoi(argv[5]);
+	int decimation_flag = atoi(argv[4]);
 	// load the input image
-	Image image;
-	image.LoadPng (argv[1]);
-	int totalPixels = image.Width () * image.Height ();
+	ComplexFFTImage inputImage;
+	inputImage.LoadPng (argv[1]);
 
-	// edit image to be either 0 or 255
-	for (int i = 0; i < image.Width(); i++){
-		for (int j = 0; j < image.Height(); j++){
-			if (image.Pixel(i,j) < 128){
-				image.Pixel(i,j) = 0;
-			}
-			else {
-				image.Pixel(i,j) = 255;
-			}
-		}
-	}
-
-	// create the normalized (sum of elements is one) histogram for the run lengths
-	vector<int> runLength (totalPixels + 3, 0);
-
-	// initialize values
-	int curr = image.Pixel(0,0);
-	if (curr == 0){
-		runLength[0] = 1;
+	//initialize outputImage
+	ComplexFFTImage outputImage;
+	if (decimation_flag == 1) {
+		outputImage.Resize(inputImage.Width()/M,inputImage.Height()/M);
 	}
 	else{
-		runLength[0] = 2;
+		outputImage.Resize(inputImage.Width()*M,inputImage.Height()*M);
 	}
-	runLength[1] = image.Width();
-	runLength[2] = image.Height();
+	////////////////////Apply Low Pass Filter if Flagged////////////
+	if(filter_flag == 1 & decimation_flag == 1){
+		//The following method combines ideal low pass filtering (to prevent aliasing)
+		// and subsampling in one step in the frequency domain:
+	  //Create two 256x256 arrays of double. These will contain the real and
+		//imaginary parts of the small output array's 2-D Fourier transform.
+		//Let small 2-D FT denote these two arrays.
 
-	int val = 1;
-	int index = 3;
-	// traverse the image in raster-snake order to get the runLengthHistogram
-	for (int x = 0, y = 0; SnakePixel (image, x, y); )
-	{
-		if (curr == image.Pixel(x,y))
-		{
-			val++;
+
+	  //Take the 2-D FT of the input image and copy a 128x128 subblock from each
+		//corner into the small 2-D FT.
+		//Take the inverse 2-D FT of the 256x256 array and divide the resulting pixel
+		//values by the decimation rate to satisfy Parseval's relation
+		//(in this case divide by 4 and in part D divide by 64).
+		//The resulting 256x256 image should be the decimated image.
+
+		//1. Compute the 2D FFT of the image
+
+			inputImage.FourierTransform ();
+
+			//Perform the frequency domain operation(s)
+			//Low pass filter
+			int width = inputImage.Height();
+			ComplexFFTImage small2DFT;
+			small2DFT.Resize(width/M,width/M);
+
+			//topleft window
+			for(int i=0; i<(width/(2*M)); i++){
+				for(int j=0; j<(width/(2*M)); j++){
+					small2DFT.Pixel(i,j) = inputImage.Pixel(i,j);
+				}
+			}
+			//topright window
+			for(int i=0; i<(width/(2*M)); i++){
+				for(int j=0; j<(width/(2*M)); j++){
+					small2DFT.Pixel(i,j+(width/(2*M))) = inputImage.Pixel(i,width-(width/(2*M))+j);
+				}
+			}
+			//bottomleft window
+			for(int i=0; i<(width/(2*M)); i++){
+				for(int j=0; j<(width/(2*M)); j++){
+					small2DFT.Pixel(i+(width/(2*M)),j) = inputImage.Pixel(width-(width/(2*M))+i,j);
+				}
+			}
+			//bottomright window
+			for(int i=0; i<(width/(2*M)); i++){
+				for(int j=0; j<(width/(2*M)); j++){
+					small2DFT.Pixel(i+(width/(2*M)),j+(width/(2*M))) = inputImage.Pixel(i+width-(width/(2*M)),j+width-(width/(2*M)));
+				}
+			}
+			small2DFT.InverseFourierTransform ();
+
+			//Scaling and copying result to decimateImage
+			for(int i=0; i<(width/(M)); i++){
+				for(int j=0; j<(width/(M)); j++){
+					outputImage.Pixel(i,j) = small2DFT.Pixel(i,j)/(M*M);
+				}
+			}
 		}
-		else
-		{
-			runLength[index] = val;
-			val = 1;
-			index ++;
-		}
-		curr = image.Pixel(x,y);
-	}
-
-	// print the histogram the specified file (only as many entries as are nonzero)
-	ofstream out (argv[2]);
-	if (out.fail () )
+	else if (decimation_flag == 1)
 	{
-		cerr << "Failed to open file for message output" << endl;
-		return 1;
-	}
-	int maxNonZeroIndex = 0;
-	for (int i = 0; i < runLength.size (); i++)
-	{
-		if (runLength[i] != 0) {
-			maxNonZeroIndex = i;
+	//Method A: Decimation without an Anti-aliasing Filter
+	for (int i = 0; i<inputImage.Height()/M; i++){
+		for(int j = 0; j<inputImage.Width()/M; j++){
+			outputImage.Pixel(i,j) = inputImage.Pixel(i*M,j*M);
 		}
 	}
+}
 
-	// int test = std::atoi()
-	stringstream ss;
-	ss << num2str(runLength[0]);
-
-	for (int i = 1; i <= maxNonZeroIndex; i++)
-	{
-		ss << ","<< num2str(runLength[i]);
+//Following code applies to all methods
+////////////////////Thresholding////////////////////
+if (decimation_flag == 1){
+	for(int i=0; i < outputImage.Height();++i){
+		for(int j=0; j < outputImage.Width();++j){
+			double pixel = outputImage.Pixel(i,j).real();
+			if(pixel<0){
+				outputImage.Pixel(i,j) = 0;
+			}
+			if(pixel>255){
+				outputImage.Pixel(i,j) = 255;
+			}
+		}
 	}
-	string message = ss.str();
+}
+else{
 
-	cout<<message<<endl;
-	out << message << endl;
+	////////////////////Compute the Residual Error////////////////////
+	//put outputImage pixel into corner of larger output imager
+	for(int i=0; i<inputImage.Height(); i++){
+		for(int j=0; j<inputImage.Width(); j++){
+			outputImage.Pixel(i*M,j*M) = inputImage.Pixel(i,j);
+		}
+	}
 
-	out.close ();
+	////////////////////Bilinear Interpolation////////////////////
+	//interpolate linearly each row between the copied pixels
+	for (int i = 0; i<inputImage.Height(); i++){
+		for(int j = 0; j<inputImage.Width()-1; j++){
+			Complex A = outputImage.Pixel(M*j,M*i);
+			Complex B = outputImage.Pixel(M*j+M,M*i);
+				for(int x = 0; x<=M; x++){
+					outputImage.Pixel(M*j+x,M*i) = ((1-((x)/M)) * A) + (((x)/M) * B);
+				}
+			}
+		}
+
+		//interpolate linearly each column between pixels
+		for (int j = 0; j<inputImage.Width()-1; j++){
+			for(int i = 0; i<inputImage.Height()-1; i++){
+
+				for(int x = 0; x<=M; x++){
+					Complex A = outputImage.Pixel(M*j+x,M*i);
+					Complex B = outputImage.Pixel(M*j+x,M*i+M);
+					for(int y = 0; y<=M; y++){
+						outputImage.Pixel(M*j+x,M*i+y) = ((1-((y)/M)) * A) + (((y)/M) * B);
+					}
+				}
+			}
+		}
+	}
+
+	////////////////////Save the following image files:////////////////////
+	outputImage.SavePng (argv[2]);
 
 	return 0;
-}
-
-// snake raster scan function -- updates x and y for a raster-snake scan
-// of image, returning false only when the whole image has been traversed
-bool SnakePixel (const Image& image, int& x, int& y)
-{
-	if (y % 2 == 0)
-	{
-		x++;
-		if (x == image.Width () )
-		{
-			x--;
-			y++;
-		}
-	}
-	else
-	{
-		x--;
-		if (x == -1)
-		{
-			x++;
-			y++;
-		}
-	}
-	return (y < image.Height () );
-}
-
-string num2str (int Number)
-{
-   ostringstream ss;
-   ss << Number;
-   return ss.str();
 }

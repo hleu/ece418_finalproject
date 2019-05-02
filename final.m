@@ -10,6 +10,7 @@ subplot(2,2,1); imagesc(I); colormap(gray);
 imagesc(I); colormap(gray);
 F = fft2(double(I));
 F2 = fftshift(F);
+%%
 subplot(2,2,2); imagesc(log(abs(F2)));
 [M N] = size(F);
 ci = round(M/2)+1; cj = round(N/2)+1;
@@ -24,14 +25,19 @@ for (i=1:hr)
                F2(i+ci, -j+cj) = F2(i+ci, j+cj);
                F2(-i+ci, j+cj) = F2(i+ci, j+cj);
                F2(-i+ci, -j+cj) = F2(i+ci, j+cj);
-               m = m+1; end;
+               m = m+1;
+           end;
         end;
     end;
 end;
+if (m < Mlen)
+    disp('Error!!! Message too long\n');
+end
+
 subplot(2,2,3); imagesc(log(abs(F2)));
 F = ifftshift (F2);
-J = ifft2(F); norm(imag(J))
-subplot(2, 2, 4);imagesc(J);
+J = ifft2(F); norm(imag(J));
+subplot(2, 2, 4); imagesc(J);
 figure; imagesc(J); colormap(gray);
 imwrite(uint8(J), output_img_file);
 
