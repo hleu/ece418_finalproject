@@ -1,7 +1,5 @@
 /*===
-lab10-bitplanes.cc
-
-Abstract: Bit plane decompostion of an image
+encoder.cc
 ===*/
 
 #include <stdlib.h>
