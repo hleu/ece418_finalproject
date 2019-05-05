@@ -1,4 +1,24 @@
-# exclude all object file 
+# exclude all object file
 *.o
 output/*
 !output/.gitkeep
+
+.DS_Store
+SingleSourceShortestPath_ver2.Rmd
+encoder
+encoder2
+encoder2.cc
+image/output.png
+lab10-bitplanes
+lab10-bitplanes.cc
+lab10-bitplanes_inverse.cc
+lena_bit0.png
+lena_bit1.png
+lena_bit2.png
+lena_bit3.png
+lena_bit4.png
+lena_bit5.png
+lena_bit6.png
+lena_bit7.png
+output.png
+previous labs/
