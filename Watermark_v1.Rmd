@@ -14,9 +14,9 @@ opts_knit$set(root.dir ="/Users/dustinmayfield/Desktop/ECE418/ece418_finalprojec
 # Introduction:
 **Background and literature review: ** In this assignement, 
 
-**Motivation: ** The problem was 
+**Motivation: ** Watermarks are identifying images or patterns that are embedded in images. They are often used on postage stamps, currency, and other documents to discourage counterfeiting. In the case of image copyrights, watermarks are often trademarks or logos that artists 
 
-**Objective: **  To use the Discrete Fourier Transform (DFT), computed using the Fast Fourier Transform (FFT), to hide an extractable watermark in an image. 
+**Objective: **  Our group chose 3 objectives that build upon eachother to explore watermarks in images. 1) To both include a conspicuous and inconspicuos watermark in an image. 2) To use the Discrete Fourier Transform (DFT), computed using the Fast Fourier Transform (FFT), to hide an extractable watermark in an image. 3) To use the concept of bitplanes discussed in Lab 10 to hide an extractable watermark in an image.
 
 # Proposed approach: 
 **Outline** talk about the reason you choose this approach over other methods (any advantages/disadvantages, etc).
@@ -76,17 +76,20 @@ Sarkar, Sudeep. (2009) "Physical Problem for Fast Fourier Transform Computer Eng
 
 \newpage
 
-![logo.png.](/Users/dustinmayfield/Desktop/ECE418/ece418_finalproject/images/logo.png)
+![logo.png.](/Users/dustinmayfield/Desktop/ECE418/ece418_finalproject/image/logo.png)
 
 
-![lena.png.](/Users/dustinmayfield/Desktop/ECE418/ece418_finalproject/images/lena.png)
+![lena.png.](/Users/dustinmayfield/Desktop/ECE418/ece418_finalproject/image/lena.png)
+
+![lena_basicwatermark.png.](/Users/dustinmayfield/Desktop/ECE418/ece418_finalproject/image/lena_basicwatermark.png)
 
 
 
 \newpage
 
-![out.png.](/Users/dustinmayfield/Desktop/ECE418/ece418_finalproject/images/out.png)
+![output_LSB_1.png.](/Users/dustinmayfield/Desktop/ECE418/ece418_finalproject/image/output_LSB_1.png)
 
+![output_LSB_3.png.](/Users/dustinmayfield/Desktop/ECE418/ece418_finalproject/image/output_LSB_3.png)
 
 ```{r , echo=FALSE}
 
