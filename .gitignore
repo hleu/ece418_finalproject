@@ -1,7 +1,5 @@
 # exclude all object file
 *.o
-output/*
-!output/.gitkeep
 
 .DS_Store
 SingleSourceShortestPath_ver2.Rmd
