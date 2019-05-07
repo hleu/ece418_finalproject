@@ -156,6 +156,18 @@ else{
 		}
 	}
 
+
+	for (int j = 0; j<outputImage.Width(); j++){
+		for(int i = 0; i<outputImage.Height(); i++){
+			if(outputImage.Pixel(i, j).real() < 128){
+				outputImage.Pixel(i, j) =	0;
+			}
+			else{
+				outputImage.Pixel(i, j) =	255;
+			}
+		}
+	}
+
 	////////////////////Save the following image files:////////////////////
 	outputImage.SavePng (argv[2]);
 
