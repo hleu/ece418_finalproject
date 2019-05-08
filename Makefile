@@ -4,7 +4,7 @@ CCFLAGS = -c -g
 LDFLAGS = -lm -lpng -lz -L/usr/local/lib
 BASE = image.o
 
-all: final-part1 final-part2 final-part3 final-part4
+all: final-part1 final-part2 final-part3 final-part4 final-part5 lab10-bitplanes
 
 final-part1:	final-part1.o $(BASE)
 	$(LD) final-part1.o $(BASE) $(LDFLAGS) -o final-part1

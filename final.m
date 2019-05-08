@@ -3,11 +3,12 @@ clear; close all;
 Message = fileread('output/logo.txt');
 output_img_start = 'output/';
 org_message = 'output/msg.txt';
+I = imread('image/lena.png');
 range = 60;
+%% black and white
 Message(1:100)
 output_img_file = [output_img_start , 'output_', num2str(range), '_', Message(3:5),'.png']
-%% black and white
-I = imread('output/test.png');
+
 figure1 = figure;
 subplot(2,2,1); imagesc(I); title('original image'); colormap(gray); 
 F = fft2(double(I));

@@ -8,7 +8,6 @@ encoder2
 encoder2.cc
 image/output.png
 lab10-bitplanes
-lab10-bitplanes.cc
 lab10-bitplanes_inverse.cc
 lena_bit0.png
 lena_bit1.png
