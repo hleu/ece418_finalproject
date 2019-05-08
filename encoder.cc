@@ -12,12 +12,12 @@ using namespace std;
 
 int main (int argc, char* argv[]) {
 	// verify arguments' correctness
-	if (argc != 4) {
+	if (argc != 5) {
 		cerr << "Usage: " << argv[0]
-		     << " lena.png logo.png output.png" << endl;
+		     << " lena.png logo.png output.png bit" << endl;
 		return 1;
 	}
-
+	int bit = atoi(argv[4]);
 	// load the input image
 	Image imageLena;
 	imageLena.LoadPng (argv[1]);
@@ -30,14 +30,41 @@ int main (int argc, char* argv[]) {
 	imagePlane.Resize (imageLena.Width (), imageLena.Height () );
 
 	// perform decomposition
+	int bitshift = 0;
+	int bitMask = 0b11111111;
+	switch (bit) {
+		case 0: bitMask = 0b11111110;
+		bitshift = 1;
+			break;
+		case 1: bitMask = 0b11111101;
+		bitshift = 2;
+			break;
+		case 2: bitMask = 0b11111011;
+		bitshift = 4;
+			break;
+		case 3: bitMask = 0b11110111;
+		bitshift = 8;
+			break;
+		case 4: bitMask = 0b11101111;
+		bitshift = 16;
+			break;
+		case 5: bitMask = 0b11011111;
+		bitshift = 32;
+			break;
+		case 6: bitMask = 0b10111111;
+		bitshift = 64;
+			break;
+		case 7: bitMask = 0b01111111;
+		bitshift = 128;
+			break;
+	}
 
-		int bitMask = 0b11111110;
 
 		for (int x = 0; x < imageLena.Width (); x++)
 		{
 			for (int y = 0; y < imageLena.Height (); y++)
 			{
-				imagePlane.Pixel (x, y) = ( (imageLena.Pixel (x, y) & bitMask) + (imageLogo.Pixel(x,y) >128 ? 1:0));
+				imagePlane.Pixel (x, y) = ( (imageLena.Pixel (x, y) & bitMask) + (imageLogo.Pixel(x,y) >128 ? bitshift:0));
 
 			}
 		}

@@ -15,7 +15,7 @@ int main (int argc, char* argv[])
 	// check parameters' correctness [for parts (a) and (b) -- this needs to be changed for (c)]
 	if (argc < 6)
 	{
-		cerr << "Usage: " << argv[0] << " input.png output.png filter_flag decimation_flag decimation/interpolation_factor" << endl;
+		cerr << "Usage: " << argv[0] << " input.png output.png filter_flag decimation_flag decimation/interpolation_factor Thresholding" << endl;
 		return 1;
 	}
 
@@ -23,6 +23,11 @@ int main (int argc, char* argv[])
 	int filter_flag = atoi(argv[3]);
 	double M = atoi(argv[5]);
 	int decimation_flag = atoi(argv[4]);
+	int thresholding = 0;
+
+	if(argc == 7){
+		int thresholding = atoi(argv[6]);
+	}
 	// load the input image
 	ComplexFFTImage inputImage;
 	inputImage.LoadPng (argv[1]);
@@ -151,6 +156,19 @@ else{
 					for(int y = 0; y<=M; y++){
 						outputImage.Pixel(M*j+x,M*i+y) = ((1-((y)/M)) * A) + (((y)/M) * B);
 					}
+				}
+			}
+		}
+	}
+
+	if (thresholding == 1){
+		for (int j = 0; j<outputImage.Width(); j++){
+			for(int i = 0; i<outputImage.Height(); i++){
+				if(outputImage.Pixel(i, j).real() < 128){
+					outputImage.Pixel(i, j) =	0;
+				}
+				else{
+					outputImage.Pixel(i, j) =	255;
 				}
 			}
 		}

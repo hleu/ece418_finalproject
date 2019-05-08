@@ -1,20 +1,20 @@
 %% input logo and output image with message
 clear; clc;
-Message = fileread('output/logo.txt');
+Message = fileread('output/test.txt');
 output_img_file = 'output/output.png';
 org_message = 'output/msg.txt';
+range = 100;
 
 %% black and white
 I = imread('image/lena.png');
-subplot(2,2,1); imagesc(I); colormap(gray);
-imagesc(I); colormap(gray);
+subplot(2,2,1); imagesc(I); title('original image'); colormap(gray); 
 F = fft2(double(I));
 F2 = fftshift(F);
-%%
-subplot(2,2,2); imagesc(log(abs(F2)));
+
+subplot(2,2,2); imagesc(log(abs(F2)));title('original image fft');  
 [M N] = size(F);
 ci = round(M/2)+1; cj = round(N/2)+1;
-lr = M/4; hr = M/4+50;
+lr = M/4; hr = M/4+range;
 Mlen = length(Message);   m=1;
 for (i=1:hr)
     for (j=1:hr)
@@ -31,13 +31,14 @@ for (i=1:hr)
     end;
 end;
 if (m < Mlen)
-    disp('Error!!! Message too long\n');
+    disp('Error!!! Message too long');
+    disp(['Message length: ',num2str(Mlen),'; For input image, can only display message with length up to: ',num2str(m)])
 end
 
-subplot(2,2,3); imagesc(log(abs(F2)));
+subplot(2,2,3);  imagesc(log(abs(F2))); title('fft image with message'); 
 F = ifftshift (F2);
 J = ifft2(F); norm(imag(J));
-subplot(2, 2, 4); imagesc(J);
+subplot(2, 2, 4); imagesc(J);  title('image with hidden message'); suptitle('Hidden-message-adding steps');
 figure; imagesc(J); colormap(gray);
 imwrite(uint8(J), output_img_file);
 
@@ -62,7 +63,7 @@ for (i=1:M)
         J(i,j) =  J(i,j) + diff(i,j);
     end
 end
-
+%%
 F = fft2(J);
 F2 = fftshift(F);
 Mlen = length(Message); m = 1;
@@ -79,6 +80,15 @@ for (i=1:hr)
     end;
 end;
 
+%% calculate MSE
+org = double(I);
+MSE = 0;
+for (i=1:M)
+    for (j=1:N)
+        MSE =  MSE + (org(i,j) - J(i,j))*(org(i,j) - J(i,j));
+    end
+end
+MSE = MSE/(M*N)
 %% rgb image
 rgb_img = imread('test.png');
 I = .2989*rgb_img(:,:,1)...

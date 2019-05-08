@@ -8,9 +8,8 @@ output: pdf_document
 ```{r setup, include=FALSE}
 library(knitr)
 opts_chunk$set(echo = TRUE)
-opts_knit$set(root.dir ="/Users/dustinmayfield/Desktop/ECE418/ece418_finalproject")
+opts_knit$set(root.dir ="/Users/dustinmayfield/Desktop/ECE418/ece418_finalproject)
 ```
-
 # Introduction:
 **Background and literature review: ** In this assignement, 
 
@@ -81,15 +80,17 @@ Sarkar, Sudeep. (2009) "Physical Problem for Fast Fourier Transform Computer Eng
 
 ![lena.png.](/Users/dustinmayfield/Desktop/ECE418/ece418_finalproject/image/lena.png)
 
-![lena_basicwatermark.png.](/Users/dustinmayfield/Desktop/ECE418/ece418_finalproject/image/lena_basicwatermark.png)
+![lena_basicwatermark.png.](/Users/dustinmayfield/Desktop/ECE418/ece418_finalproject/output/lena_basicwatermark.png)
 
 
 
 \newpage
 
-![output_LSB_1.png.](/Users/dustinmayfield/Desktop/ECE418/ece418_finalproject/image/output_LSB_1.png)
+![lena_hiddentxt.png.](/Users/dustinmayfield/Desktop/ECE418/ece418_finalproject/output/lena_hiddentxt.png.)
 
-![output_LSB_3.png.](/Users/dustinmayfield/Desktop/ECE418/ece418_finalproject/image/output_LSB_3.png)
+![output_LSB_1.png.](/Users/dustinmayfield/Desktop/ECE418/ece418_finalproject/output/output_LSB_1.png)
+
+![output_LSB_3.png.](/Users/dustinmayfield/Desktop/ECE418/ece418_finalproject/output/output_LSB_3.png)
 
 ```{r , echo=FALSE}
 
