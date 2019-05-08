@@ -93,10 +93,6 @@ for (i=1:M)
 end
 MSE = MSE/(M*N)
 
-subplot(1, 2, 1); imagesc(J);  title('image with hidden message'); suptitle('Hidden-message-adding steps');
-subplot(1, 2, 1); imagesc(J);  title('image with hidden message'); suptitle('Hidden-message-adding steps');
-saveas((figure1), [output_img_start , 'step_',num2str(range), '_', Message(3:5),'.png']);
-
 %% rgb image
 %rgb_img = imread('test.png');
 %I = .2989*rgb_img(:,:,1)...

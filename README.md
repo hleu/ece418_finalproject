@@ -33,6 +33,8 @@ make final-part1
 make final-part2
 make final-part3
 make final-part4
+make final-part5
+make lab10-bitplanes
 ```
 
 ## Running the code
@@ -52,9 +54,9 @@ For example,
 And we will have the output image with logo on top in image/out.png
 
 ### Part 2
-This part is very important in image processing in general and even more in our case. We need to be able to easily manipulate the images' sizes to make the task feasible for the following task. Therefore, we modified our code for one of the previous lab to perform image interpolation/decimation as needed. The general instruction is
+This part is very important in image processing in general and even more in our case. We need to be able to easily manipulate the images' sizes to make the task feasible for the following task. Therefore, we modified our code for one of the previous lab to perform image interpolation/decimation as needed. Additionally, it is important to have the logo images of only value 0 or 255 so we add threshold_flag to decide wether or not we need to threshold. It is not necessary to add this flag otherwise. The general instruction is
 ```
-./final-part2 input.png output.png filter_flag decimation_flag decimation/interpolation_factor
+./final-part2 input.png output.png filter_flag decimation_flag decimation/interpolation_factor threshold_flag
 ```
 To perform image decimation, we need to set the decimation_flag to 1, and we can choose either to apply a low pass filter to the image to get a better output image by setting the filter flag to 1 or simply apply linear decimation to the image by setting the filter flag to 0. For example, to half the size of an image with filter we can do,
 ```
@@ -89,7 +91,7 @@ org_message = 'original_message.txt';
 For example,
 ```
 Message = fileread('output/logo.txt');
-output_img_file = 'output/output.png';
+output_img_file = 'output/';
 org_message = 'output/msg.txt';
 ```
 
@@ -103,6 +105,33 @@ For example,
 ```
 
 This logo image is the original logo with each pixel threshold to 0 or 255 only.
+
+### Part 4
+Since the images we work with are uint8, we can separate any of suhc images to 8 bit planes. This part encode a logo image to replace any bit plane of the original image and then decode the image to 8 bit plane image. 
+```
+./final-part5 input.png logo.png output.png bit 
+```
+For example,
+```
+./final-part4 image/lena.png image/logo.png output/lena_logo.png 0
+```
+This will replace the bit 0 plane with the logo image. We can do this several times with different bit planes to hide more logo images. For example,
+```
+./final-part4 image/lena.png image/logo.png output/lena_logo.png 0
+./final-part4 output/lena_logo.png image/game.png output/lena_logo.png 1
+./final-part4 output/lena_logo.png image/letter.png output/lena_logo.png 2
+```
+This will result in a new lena image with the three least significant bits replaced with 3 different logo images.
+
+To decode this new image to 8 bit planes, we use lab 10 provided code to output 8 bit planes images. 
+input.png output
+```
+./lab10-bitplanes input.png output_folder
+```
+For example,
+```
+./lab10-bitplanes output/lena_logo.png bitplane_out
+```
 
 ## Expected rough timeline
 * 04/15/2019: Finish figuring out how to implement basic watermark on image
