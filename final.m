@@ -1,12 +1,14 @@
 %% input logo and output image with message
-clear; clc;
-Message = fileread('output/test.txt');
-output_img_file = 'output/output.png';
+clear; close all;
+Message = fileread('output/logo.txt');
+output_img_start = 'output/';
 org_message = 'output/msg.txt';
-range = 100;
-
+range = 60;
+Message(1:100)
+output_img_file = [output_img_start , 'output_', num2str(range), '_', Message(3:5),'.png']
 %% black and white
-I = imread('image/lena.png');
+I = imread('output/test.png');
+figure1 = figure;
 subplot(2,2,1); imagesc(I); title('original image'); colormap(gray); 
 F = fft2(double(I));
 F2 = fftshift(F);
@@ -39,11 +41,12 @@ subplot(2,2,3);  imagesc(log(abs(F2))); title('fft image with message');
 F = ifftshift (F2);
 J = ifft2(F); norm(imag(J));
 subplot(2, 2, 4); imagesc(J);  title('image with hidden message'); suptitle('Hidden-message-adding steps');
+saveas((figure1), [output_img_start , 'step_',num2str(range), '_', Message(3:5),'.png']);
+
 figure; imagesc(J); colormap(gray);
 imwrite(uint8(J), output_img_file);
 
 %% get the different image
-clc;
 J2 = imread(output_img_file);
 J2 = double(J2);
 for (i=1:M)
@@ -89,8 +92,13 @@ for (i=1:M)
     end
 end
 MSE = MSE/(M*N)
+
+subplot(1, 2, 1); imagesc(J);  title('image with hidden message'); suptitle('Hidden-message-adding steps');
+subplot(1, 2, 1); imagesc(J);  title('image with hidden message'); suptitle('Hidden-message-adding steps');
+saveas((figure1), [output_img_start , 'step_',num2str(range), '_', Message(3:5),'.png']);
+
 %% rgb image
-rgb_img = imread('test.png');
-I = .2989*rgb_img(:,:,1)...
-    +.5870*rgb_img(:,:,2)...
-    +.1140*rgb_img(:,:,3);
+%rgb_img = imread('test.png');
+%I = .2989*rgb_img(:,:,1)...
+%    +.5870*rgb_img(:,:,2)...
+%    +.1140*rgb_img(:,:,3);
